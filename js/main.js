@@ -1,13 +1,38 @@
 "use strict";
 
 {
-  const words = ["apple", "sky", "blue", "middle", "set"];
-  let word = words[Math.floor(Math.random() * words.length)];
-  let loc = 0;
-  let score = 0;
-  let miss = 0;
-  const timeLimit = 3 * 1000;
+  const words = [
+    "apple",
+    "sky",
+    "blue",
+    "middle",
+    "set",
+    "strawberry",
+    "orange",
+    "kiwi",
+    "grapefruit",
+    "pineapple",
+    "banana",
+    "grape",
+    "plum",
+    "peach",
+    "dog",
+    "monkey",
+    "elephant",
+    "fox",
+    "rabbit",
+    "kangaroo",
+    "tiger",
+    "cat",
+    "mouse",
+  ];
+  let word;
+  let loc;
+  let score;
+  let miss;
+  const timeLimit = 20 * 1000;
   let startTime;
+  let isPlaying = false;
 
   const target = document.getElementById("target");
   const scoreLabel = document.getElementById("score");
@@ -30,18 +55,45 @@
     }, 10);
 
     if (timeLeft < 0) {
+      isPlaying = false;
       clearTimeout(timeoutId);
-      alert("Game Over");
+      timerLabel.textContent = "00.00";
+      setTimeout(() => {
+        showResult();
+      }, 100);
+      target.textContent = "click to replay";
     }
   }
 
+  function showResult() {
+    const accuracy = score + miss === 0 ? 0 : (score / (score + miss)) * 100;
+    alert(
+      `${score} lettres, ${miss} misses, ${accuracy.toFixed(2)}% accuracy!`
+    );
+  }
+
   window.addEventListener("click", () => {
+    if (isPlaying === true) {
+      return;
+    }
+    isPlaying = true;
+
+    loc = 0;
+    score = 0;
+    miss = 0;
+    scoreLabel.textContent = score;
+    missLabel.textContent = miss;
+    word = words[Math.floor(Math.random() * words.length)];
+
     target.textContent = word;
     startTime = Date.now();
     updateTime();
   });
 
   window.addEventListener("keydown", (e) => {
+    if (isPlaying !== true) {
+      return;
+    }
     console.log(e.key);
     if (e.key === word[loc]) {
       loc++;
